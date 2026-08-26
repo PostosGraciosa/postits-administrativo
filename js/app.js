@@ -8,17 +8,24 @@
    CONFIGURAÇÕES
 ============================================ */
 
-const CHAVE_STORAGE = "postits_administrativo_v1";
+const CHAVE_STORAGE =
+    "postits_administrativo_v1";
 
-const TEMPO_ATUALIZACAO = 1000;
 
-const LIMITE_PROXIMO_MINUTOS = 24 * 60;
+const TEMPO_ATUALIZACAO =
+    1000;
 
-const INTERVALO_NOTIFICACAO = 60 * 1000;
+
+const LIMITE_PROXIMO_MINUTOS =
+    24 * 60;
+
+
+const INTERVALO_NOTIFICACAO =
+    60 * 1000;
 
 
 /* ============================================
-   ESTADO DO SISTEMA
+   ESTADO
 ============================================ */
 
 let postits = [];
@@ -28,6 +35,8 @@ let postitParaExcluir = null;
 let mostrarHistorico = false;
 
 let ultimaVerificacaoNotificacao = 0;
+
+let temporizadorNotificacao = null;
 
 
 /* ============================================
@@ -50,23 +59,25 @@ function iniciarSistema() {
 
     atualizarInterface();
 
+    verificarPermissaoNotificacao();
+
+
     setInterval(
         atualizarDataHora,
         TEMPO_ATUALIZACAO
     );
+
 
     setInterval(
         verificarSistema,
         TEMPO_ATUALIZACAO
     );
 
-    verificarPermissaoNotificacao();
-
 }
 
 
 /* ============================================
-   CARREGAR POST-ITS
+   CARREGAR
 ============================================ */
 
 function carregarPostits() {
@@ -74,32 +85,34 @@ function carregarPostits() {
     try {
 
         const dados =
-            localStorage.getItem(CHAVE_STORAGE);
+            localStorage.getItem(
+                CHAVE_STORAGE
+            );
+
 
         if (!dados) {
 
             postits = [];
 
             return;
+
         }
 
-        const dadosConvertidos =
+
+        const convertidos =
             JSON.parse(dados);
 
-        if (Array.isArray(dadosConvertidos)) {
 
-            postits = dadosConvertidos;
+        postits =
+            Array.isArray(convertidos)
+                ? convertidos
+                : [];
 
-        } else {
-
-            postits = [];
-
-        }
 
     } catch (erro) {
 
         console.error(
-            "Erro ao carregar post-its:",
+            "Erro ao carregar:",
             erro
         );
 
@@ -111,7 +124,7 @@ function carregarPostits() {
 
 
 /* ============================================
-   SALVAR POST-ITS
+   SALVAR
 ============================================ */
 
 function salvarPostits() {
@@ -126,7 +139,7 @@ function salvarPostits() {
     } catch (erro) {
 
         console.error(
-            "Erro ao salvar post-its:",
+            "Erro ao salvar:",
             erro
         );
 
@@ -147,10 +160,6 @@ function salvarPostits() {
 function configurarEventos() {
 
 
-    /* ================================
-       NOVO POST-IT
-    ================================= */
-
     document
         .getElementById("btnNovoPostit")
         ?.addEventListener(
@@ -166,10 +175,6 @@ function configurarEventos() {
             () => abrirModal()
         );
 
-
-    /* ================================
-       FECHAR MODAL
-    ================================= */
 
     document
         .getElementById("btnFecharModal")
@@ -187,12 +192,10 @@ function configurarEventos() {
         );
 
 
-    /* ================================
-       FUNDO DO MODAL
-    ================================= */
-
     document
-        .querySelector("#modalPostit .modal-fundo")
+        .querySelector(
+            "#modalPostit .modal-fundo"
+        )
         ?.addEventListener(
             "click",
             fecharModal
@@ -200,16 +203,14 @@ function configurarEventos() {
 
 
     document
-        .querySelector("#modalConfirmacao .modal-fundo")
+        .querySelector(
+            "#modalConfirmacao .modal-fundo"
+        )
         ?.addEventListener(
             "click",
             fecharModalConfirmacao
         );
 
-
-    /* ================================
-       FORMULÁRIO
-    ================================= */
 
     document
         .getElementById("formPostit")
@@ -219,10 +220,6 @@ function configurarEventos() {
         );
 
 
-    /* ================================
-       PESQUISA
-    ================================= */
-
     document
         .getElementById("campoPesquisa")
         ?.addEventListener(
@@ -230,10 +227,6 @@ function configurarEventos() {
             atualizarInterface
         );
 
-
-    /* ================================
-       FILTROS
-    ================================= */
 
     document
         .getElementById("filtroStatus")
@@ -259,10 +252,6 @@ function configurarEventos() {
         );
 
 
-    /* ================================
-       HISTÓRICO
-    ================================= */
-
     document
         .getElementById("btnToggleHistorico")
         ?.addEventListener(
@@ -270,10 +259,6 @@ function configurarEventos() {
             alternarHistorico
         );
 
-
-    /* ================================
-       EXCLUSÃO
-    ================================= */
 
     document
         .getElementById("btnCancelarExclusao")
@@ -291,10 +276,6 @@ function configurarEventos() {
         );
 
 
-    /* ================================
-       NOTIFICAÇÃO
-    ================================= */
-
     document
         .getElementById("btnFecharNotificacao")
         ?.addEventListener(
@@ -303,21 +284,28 @@ function configurarEventos() {
         );
 
 
-    /* ================================
-       TECLA ESC
-    ================================= */
+    document
+        .getElementById("btnAtivarNotificacoes")
+        ?.addEventListener(
+            "click",
+            solicitarPermissaoNotificacao
+        );
+
 
     document.addEventListener(
         "keydown",
         function (evento) {
 
-            if (evento.key !== "Escape") {
-                return;
+            if (
+                evento.key ===
+                "Escape"
+            ) {
+
+                fecharModal();
+
+                fecharModalConfirmacao();
+
             }
-
-            fecharModal();
-
-            fecharModalConfirmacao();
 
         }
     );
@@ -334,61 +322,69 @@ function atualizarDataHora() {
     const agora = new Date();
 
 
-    /* ================================
-       DIA DA SEMANA
-    ================================= */
-
     const dias = [
+
         "domingo",
+
         "segunda-feira",
+
         "terça-feira",
+
         "quarta-feira",
+
         "quinta-feira",
+
         "sexta-feira",
+
         "sábado"
+
     ];
 
 
-    const elementoDia =
-        document.getElementById("diaSemana");
+    const dia =
+        document.getElementById(
+            "diaSemana"
+        );
 
 
-    if (elementoDia) {
+    const data =
+        document.getElementById(
+            "dataAtual"
+        );
 
-        elementoDia.textContent =
-            dias[agora.getDay()];
+
+    const hora =
+        document.getElementById(
+            "horaAtual"
+        );
+
+
+    if (dia) {
+
+        dia.textContent =
+            dias[
+                agora.getDay()
+            ];
 
     }
 
 
-    /* ================================
-       DATA
-    ================================= */
+    if (data) {
 
-    const elementoData =
-        document.getElementById("dataAtual");
-
-
-    if (elementoData) {
-
-        elementoData.textContent =
-            formatarData(agora);
+        data.textContent =
+            formatarData(
+                agora
+            );
 
     }
 
 
-    /* ================================
-       HORA
-    ================================= */
+    if (hora) {
 
-    const elementoHora =
-        document.getElementById("horaAtual");
-
-
-    if (elementoHora) {
-
-        elementoHora.textContent =
-            formatarHora(agora);
+        hora.textContent =
+            formatarHora(
+                agora
+            );
 
     }
 
@@ -396,7 +392,7 @@ function atualizarDataHora() {
 
 
 /* ============================================
-   VERIFICAÇÃO AUTOMÁTICA
+   VERIFICAÇÃO
 ============================================ */
 
 function verificarSistema() {
@@ -415,17 +411,30 @@ function verificarSistema() {
 function abrirModal(id = null) {
 
     const modal =
-        document.getElementById("modalPostit");
+        document.getElementById(
+            "modalPostit"
+        );
 
-    const tituloModal =
-        document.getElementById("tituloModal");
 
     const formulario =
-        document.getElementById("formPostit");
+        document.getElementById(
+            "formPostit"
+        );
 
 
-    if (!modal || !formulario) {
+    const tituloModal =
+        document.getElementById(
+            "tituloModal"
+        );
+
+
+    if (
+        !modal ||
+        !formulario
+    ) {
+
         return;
+
     }
 
 
@@ -441,7 +450,8 @@ function abrirModal(id = null) {
 
         const postit =
             postits.find(
-                item => item.id === id
+                item =>
+                    item.id === id
             );
 
 
@@ -456,45 +466,54 @@ function abrirModal(id = null) {
 
         document.getElementById(
             "postitId"
-        ).value = postit.id;
+        ).value =
+            postit.id;
 
 
         document.getElementById(
             "titulo"
-        ).value = postit.titulo || "";
+        ).value =
+            postit.titulo || "";
 
 
         document.getElementById(
             "descricao"
-        ).value = postit.descricao || "";
+        ).value =
+            postit.descricao || "";
 
 
         document.getElementById(
             "data"
-        ).value = postit.data || "";
+        ).value =
+            postit.data || "";
 
 
         document.getElementById(
             "hora"
-        ).value = postit.hora || "";
+        ).value =
+            postit.hora || "";
 
 
         document.getElementById(
             "prioridade"
         ).value =
-            postit.prioridade || "normal";
+            postit.prioridade ||
+            "normal";
 
 
         document.getElementById(
             "categoria"
         ).value =
-            postit.categoria || "administrativo";
+            postit.categoria ||
+            "administrativo";
 
 
         document.getElementById(
             "aviso"
         ).value =
-            String(postit.aviso ?? 30);
+            String(
+                postit.aviso ?? 10
+            );
 
     } else {
 
@@ -502,24 +521,32 @@ function abrirModal(id = null) {
             "Novo Post-it";
 
 
-        const agora = new Date();
+        const agora =
+            new Date();
 
 
         document.getElementById(
             "data"
         ).value =
-            formatarDataInput(agora);
+            formatarDataInput(
+                agora
+            );
 
 
         document.getElementById(
             "hora"
         ).value =
-            formatarHoraInput(agora);
+            formatarHoraInput(
+                agora
+            );
 
     }
 
 
-    modal.classList.add("aberto");
+    modal.classList.add(
+        "aberto"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
@@ -548,7 +575,9 @@ function abrirModal(id = null) {
 function fecharModal() {
 
     const modal =
-        document.getElementById("modalPostit");
+        document.getElementById(
+            "modalPostit"
+        );
 
 
     if (!modal) {
@@ -556,7 +585,10 @@ function fecharModal() {
     }
 
 
-    modal.classList.remove("aberto");
+    modal.classList.remove(
+        "aberto"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
@@ -631,10 +663,11 @@ function salvarFormulario(evento) {
 
         mostrarNotificacao(
             "Atenção",
-            "Digite um título para o post-it."
+            "Digite um título."
         );
 
         return;
+
     }
 
 
@@ -646,6 +679,7 @@ function salvarFormulario(evento) {
         );
 
         return;
+
     }
 
 
@@ -657,18 +691,16 @@ function salvarFormulario(evento) {
         );
 
         return;
+
     }
 
-
-    /* ================================
-       EDITAR
-    ================================= */
 
     if (id) {
 
         const indice =
             postits.findIndex(
-                item => item.id === id
+                item =>
+                    item.id === id
             );
 
 
@@ -696,23 +728,18 @@ function salvarFormulario(evento) {
                 aviso;
 
             postits[indice].atualizadoEm =
-                new Date().toISOString();
+                new Date()
+                    .toISOString();
 
         }
+
 
         mostrarNotificacao(
             "Post-it atualizado",
             titulo
         );
 
-    }
-
-
-    /* ================================
-       NOVO
-    ================================= */
-
-    else {
+    } else {
 
         const novoPostit = {
 
@@ -735,17 +762,21 @@ function salvarFormulario(evento) {
             concluido: false,
 
             criadoEm:
-                new Date().toISOString(),
+                new Date()
+                    .toISOString(),
 
             atualizadoEm:
-                new Date().toISOString(),
+                new Date()
+                    .toISOString(),
 
             concluidoEm: null
 
         };
 
 
-        postits.push(novoPostit);
+        postits.push(
+            novoPostit
+        );
 
 
         mostrarNotificacao(
@@ -766,7 +797,7 @@ function salvarFormulario(evento) {
 
 
 /* ============================================
-   ATUALIZAR INTERFACE
+   INTERFACE
 ============================================ */
 
 function atualizarInterface() {
@@ -781,41 +812,49 @@ function atualizarInterface() {
 
 
 /* ============================================
-   ATUALIZAR RESUMO
+   RESUMO
 ============================================ */
 
 function atualizarResumo() {
 
     const ativos =
         postits.filter(
-            postit => !postit.concluido
+            postit =>
+                !postit.concluido
         );
 
 
     const atrasados =
         ativos.filter(
             postit =>
-                obterStatus(postit) === "atrasado"
+                obterStatus(
+                    postit
+                ) === "atrasado"
         );
 
 
     const hoje =
         ativos.filter(
             postit =>
-                obterStatus(postit) === "hoje"
+                obterStatus(
+                    postit
+                ) === "hoje"
         );
 
 
     const proximos =
         ativos.filter(
             postit =>
-                obterStatus(postit) === "proximo"
+                obterStatus(
+                    postit
+                ) === "proximo"
         );
 
 
     const concluidos =
         postits.filter(
-            postit => postit.concluido
+            postit =>
+                postit.concluido
         );
 
 
@@ -852,7 +891,7 @@ function atualizarResumo() {
 
 
 /* ============================================
-   ATUALIZAR POST-ITS
+   LISTA
 ============================================ */
 
 function atualizarPostits() {
@@ -885,22 +924,20 @@ function atualizarPostits() {
         postit => {
 
             container.appendChild(
-                criarElementoPostit(postit)
+                criarElementoPostit(
+                    postit
+                )
             );
 
         }
     );
 
 
-    const quantidade =
-        resultados.length;
-
-
     definirTexto(
         "contadorExibidos",
-        quantidade === 1
+        resultados.length === 1
             ? "1 registro"
-            : `${quantidade} registros`
+            : `${resultados.length} registros`
     );
 
 
@@ -908,7 +945,7 @@ function atualizarPostits() {
 
         estadoVazio.classList.toggle(
             "visivel",
-            quantidade === 0
+            resultados.length === 0
         );
 
     }
@@ -917,62 +954,54 @@ function atualizarPostits() {
 
 
 /* ============================================
-   FILTRAR POST-ITS
+   FILTROS
 ============================================ */
 
 function filtrarPostits() {
 
-    const campoPesquisa =
-        document.getElementById(
-            "campoPesquisa"
-        );
-
-
-    const filtroStatus =
-        document.getElementById(
-            "filtroStatus"
-        );
-
-
-    const filtroPrioridade =
-        document.getElementById(
-            "filtroPrioridade"
-        );
-
-
-    const filtroCategoria =
-        document.getElementById(
-            "filtroCategoria"
-        );
-
-
     const pesquisa =
         (
-            campoPesquisa?.value || ""
+            document
+                .getElementById(
+                    "campoPesquisa"
+                )
+                ?.value ||
+            ""
         )
             .trim()
             .toLowerCase();
 
 
     const statusSelecionado =
-        filtroStatus?.value || "todos";
+        document
+            .getElementById(
+                "filtroStatus"
+            )
+            ?.value ||
+        "todos";
 
 
     const prioridadeSelecionada =
-        filtroPrioridade?.value || "todas";
+        document
+            .getElementById(
+                "filtroPrioridade"
+            )
+            ?.value ||
+        "todas";
 
 
     const categoriaSelecionada =
-        filtroCategoria?.value || "todas";
+        document
+            .getElementById(
+                "filtroCategoria"
+            )
+            ?.value ||
+        "todas";
 
 
     let resultados =
         [...postits];
 
-
-    /* ================================
-       PESQUISA
-    ================================= */
 
     if (pesquisa) {
 
@@ -1005,11 +1034,10 @@ function filtrarPostits() {
     }
 
 
-    /* ================================
-       STATUS
-    ================================= */
-
-    if (statusSelecionado !== "todos") {
+    if (
+        statusSelecionado !==
+        "todos"
+    ) {
 
         resultados =
             resultados.filter(
@@ -1025,13 +1053,19 @@ function filtrarPostits() {
                     }
 
 
-                    if (postit.concluido) {
+                    if (
+                        postit.concluido
+                    ) {
+
                         return false;
+
                     }
 
 
                     return (
-                        obterStatus(postit) ===
+                        obterStatus(
+                            postit
+                        ) ===
                         statusSelecionado
                     );
 
@@ -1040,10 +1074,6 @@ function filtrarPostits() {
 
     }
 
-
-    /* ================================
-       PRIORIDADE
-    ================================= */
 
     if (
         prioridadeSelecionada !==
@@ -1060,10 +1090,6 @@ function filtrarPostits() {
     }
 
 
-    /* ================================
-       CATEGORIA
-    ================================= */
-
     if (
         categoriaSelecionada !==
         "todas"
@@ -1079,10 +1105,6 @@ function filtrarPostits() {
     }
 
 
-    /* ================================
-       ORDEM
-    ================================= */
-
     resultados.sort(
         compararPostits
     );
@@ -1094,7 +1116,7 @@ function filtrarPostits() {
 
 
 /* ============================================
-   ORDENAR POST-ITS
+   ORDENAÇÃO
 ============================================ */
 
 function compararPostits(a, b) {
@@ -1124,14 +1146,7 @@ function compararPostits(a, b) {
         !b.concluido
     ) {
 
-        const statusA =
-            obterStatus(a);
-
-        const statusB =
-            obterStatus(b);
-
-
-        const ordemStatus = {
+        const ordem = {
 
             atrasado: 1,
 
@@ -1144,44 +1159,56 @@ function compararPostits(a, b) {
         };
 
 
-        const diferencaStatus =
+        const diferenca =
             (
-                ordemStatus[statusA] || 99
+                ordem[
+                    obterStatus(a)
+                ] || 99
             ) -
             (
-                ordemStatus[statusB] || 99
+                ordem[
+                    obterStatus(b)
+                ] || 99
             );
 
 
-        if (diferencaStatus !== 0) {
+        if (diferenca !== 0) {
 
-            return diferencaStatus;
+            return diferenca;
 
         }
 
     }
 
 
-    return obterDataHora(a) -
-        obterDataHora(b);
+    return (
+        obterDataHora(a) -
+        obterDataHora(b)
+    );
 
 }
 
 
 /* ============================================
-   CRIAR ELEMENTO POST-IT
+   CRIAR POST-IT
 ============================================ */
 
-function criarElementoPostit(postit) {
+function criarElementoPostit(
+    postit
+) {
 
     const elemento =
-        document.createElement("article");
+        document.createElement(
+            "article"
+        );
 
 
     const status =
         postit.concluido
             ? "concluido"
-            : obterStatus(postit);
+            : obterStatus(
+                postit
+            );
 
 
     elemento.className =
@@ -1202,8 +1229,7 @@ function criarElementoPostit(postit) {
 
     const statusInfo =
         obterTextoStatus(
-            status,
-            postit
+            status
         );
 
 
@@ -1212,7 +1238,9 @@ function criarElementoPostit(postit) {
         <div class="postit-cabecalho">
 
             <h3 class="postit-titulo">
-                ${escaparHTML(postit.titulo)}
+                ${escaparHTML(
+                    postit.titulo
+                )}
             </h3>
 
             <span class="
@@ -1264,15 +1292,15 @@ function criarElementoPostit(postit) {
                 </span>
 
                 <span>
+
                     <strong>
                         ${postit.hora}
                     </strong>
 
-                    ${
-                        obterTempoRestante(
-                            postit
-                        )
-                    }
+                    ${obterTempoRestante(
+                        postit
+                    )}
+
                 </span>
 
             </div>
@@ -1307,6 +1335,7 @@ function criarElementoPostit(postit) {
                 postit.concluido
 
                     ? `
+
                         <button
                             type="button"
                             class="btn-editar"
@@ -1324,9 +1353,11 @@ function criarElementoPostit(postit) {
                         >
                             🗑️ Excluir
                         </button>
+
                     `
 
                     : `
+
                         <button
                             type="button"
                             class="btn-concluir"
@@ -1353,6 +1384,7 @@ function criarElementoPostit(postit) {
                         >
                             🗑️ Excluir
                         </button>
+
                     `
             }
 
@@ -1372,16 +1404,9 @@ function criarElementoPostit(postit) {
                     "click",
                     function () {
 
-                        const acao =
-                            this.dataset.acao;
-
-                        const id =
-                            this.dataset.id;
-
-
                         executarAcao(
-                            acao,
-                            id
+                            this.dataset.acao,
+                            this.dataset.id
                         );
 
                     }
@@ -1397,7 +1422,7 @@ function criarElementoPostit(postit) {
 
 
 /* ============================================
-   EXECUTAR AÇÃO
+   AÇÕES
 ============================================ */
 
 function executarAcao(
@@ -1405,27 +1430,33 @@ function executarAcao(
     id
 ) {
 
-    switch (acao) {
+    if (
+        acao === "concluir"
+    ) {
 
-        case "concluir":
+        concluirPostit(id);
 
-            concluirPostit(id);
+        return;
 
-            break;
-
-
-        case "editar":
-
-            abrirModal(id);
-
-            break;
+    }
 
 
-        case "excluir":
+    if (
+        acao === "editar"
+    ) {
 
-            abrirConfirmacaoExclusao(id);
+        abrirModal(id);
 
-            break;
+        return;
+
+    }
+
+
+    if (
+        acao === "excluir"
+    ) {
+
+        abrirConfirmacaoExclusao(id);
 
     }
 
@@ -1433,14 +1464,15 @@ function executarAcao(
 
 
 /* ============================================
-   CONCLUIR POST-IT
+   CONCLUIR
 ============================================ */
 
 function concluirPostit(id) {
 
     const postit =
         postits.find(
-            item => item.id === id
+            item =>
+                item.id === id
         );
 
 
@@ -1449,14 +1481,18 @@ function concluirPostit(id) {
     }
 
 
-    postit.concluido = true;
+    postit.concluido =
+        true;
+
 
     postit.concluidoEm =
-        new Date().toISOString();
+        new Date()
+            .toISOString();
 
 
     postit.atualizadoEm =
-        new Date().toISOString();
+        new Date()
+            .toISOString();
 
 
     salvarPostits();
@@ -1465,7 +1501,7 @@ function concluirPostit(id) {
 
 
     mostrarNotificacao(
-        "Concluído",
+        "✅ Concluído",
         `${postit.titulo} foi concluído.`
     );
 
@@ -1473,14 +1509,15 @@ function concluirPostit(id) {
 
 
 /* ============================================
-   REABRIR POST-IT
+   REABRIR
 ============================================ */
 
 function reabrirPostit(id) {
 
     const postit =
         postits.find(
-            item => item.id === id
+            item =>
+                item.id === id
         );
 
 
@@ -1489,12 +1526,17 @@ function reabrirPostit(id) {
     }
 
 
-    postit.concluido = false;
+    postit.concluido =
+        false;
 
-    postit.concluidoEm = null;
+
+    postit.concluidoEm =
+        null;
+
 
     postit.atualizadoEm =
-        new Date().toISOString();
+        new Date()
+            .toISOString();
 
 
     salvarPostits();
@@ -1505,12 +1547,15 @@ function reabrirPostit(id) {
 
 
 /* ============================================
-   MODAL DE EXCLUSÃO
+   EXCLUSÃO
 ============================================ */
 
-function abrirConfirmacaoExclusao(id) {
+function abrirConfirmacaoExclusao(
+    id
+) {
 
-    postitParaExcluir = id;
+    postitParaExcluir =
+        id;
 
 
     const modal =
@@ -1524,7 +1569,10 @@ function abrirConfirmacaoExclusao(id) {
     }
 
 
-    modal.classList.add("aberto");
+    modal.classList.add(
+        "aberto"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
@@ -1547,7 +1595,10 @@ function fecharModalConfirmacao() {
     }
 
 
-    modal.classList.remove("aberto");
+    modal.classList.remove(
+        "aberto"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
@@ -1555,14 +1606,11 @@ function fecharModalConfirmacao() {
     );
 
 
-    postitParaExcluir = null;
+    postitParaExcluir =
+        null;
 
 }
 
-
-/* ============================================
-   CONFIRMAR EXCLUSÃO
-============================================ */
 
 function confirmarExclusao() {
 
@@ -1584,6 +1632,7 @@ function confirmarExclusao() {
         fecharModalConfirmacao();
 
         return;
+
     }
 
 
@@ -1658,10 +1707,6 @@ function alternarHistorico() {
 }
 
 
-/* ============================================
-   ATUALIZAR HISTÓRICO
-============================================ */
-
 function atualizarHistorico() {
 
     const lista =
@@ -1700,7 +1745,9 @@ function atualizarHistorico() {
             );
 
 
-    if (concluidos.length === 0) {
+    if (
+        concluidos.length === 0
+    ) {
 
         lista.innerHTML = `
 
@@ -1727,6 +1774,7 @@ function atualizarHistorico() {
         `;
 
         return;
+
     }
 
 
@@ -1759,11 +1807,9 @@ function atualizarHistorico() {
 
                     <span>
                         Concluído em
-                        ${
-                            formatarDataHora(
-                                postit.concluidoEm
-                            )
-                        }
+                        ${formatarDataHora(
+                            postit.concluidoEm
+                        )}
                     </span>
 
                 </div>
@@ -1771,7 +1817,9 @@ function atualizarHistorico() {
             `;
 
 
-            lista.appendChild(item);
+            lista.appendChild(
+                item
+            );
 
         }
     );
@@ -1780,7 +1828,7 @@ function atualizarHistorico() {
 
 
 /* ============================================
-   STATUS DO POST-IT
+   STATUS
 ============================================ */
 
 function obterStatus(postit) {
@@ -1793,7 +1841,9 @@ function obterStatus(postit) {
 
 
     const dataHora =
-        obterDataHora(postit);
+        obterDataHora(
+            postit
+        );
 
 
     const agora =
@@ -1819,10 +1869,15 @@ function obterStatus(postit) {
 
 
     const dataHoje =
-        formatarDataInput(agora);
+        formatarDataInput(
+            agora
+        );
 
 
-    if (postit.data === dataHoje) {
+    if (
+        postit.data ===
+        dataHoje
+    ) {
 
         return "hoje";
 
@@ -1845,41 +1900,37 @@ function obterStatus(postit) {
 
 
 /* ============================================
-   TEXTO DO STATUS
+   TEXTO STATUS
 ============================================ */
 
 function obterTextoStatus(
-    status,
-    postit
+    status
 ) {
 
-    switch (status) {
+    const textos = {
 
-        case "atrasado":
+        atrasado:
+            "🔴 Atrasado",
 
-            return "🔴 Atrasado";
+        hoje:
+            "🟠 Hoje",
 
+        proximo:
+            "🔵 Próximo",
 
-        case "hoje":
+        concluido:
+            "🟢 Concluído",
 
-            return "🟠 Hoje";
+        pendente:
+            "🟡 Pendente"
 
-
-        case "proximo":
-
-            return "🔵 Próximo";
-
-
-        case "concluido":
-
-            return "🟢 Concluído";
+    };
 
 
-        default:
-
-            return "🟡 Pendente";
-
-    }
+    return (
+        textos[status] ||
+        "🟡 Pendente"
+    );
 
 }
 
@@ -1888,7 +1939,9 @@ function obterTextoStatus(
    TEMPO RESTANTE
 ============================================ */
 
-function obterTempoRestante(postit) {
+function obterTempoRestante(
+    postit
+) {
 
     if (postit.concluido) {
 
@@ -1898,7 +1951,9 @@ function obterTempoRestante(postit) {
 
 
     const dataHora =
-        obterDataHora(postit);
+        obterDataHora(
+            postit
+        );
 
 
     const agora =
@@ -1993,7 +2048,8 @@ function obterTempoRestante(postit) {
 
     return `
         <span>
-            • em ${dias} dia${dias !== 1 ? "s" : ""}
+            • em ${dias}
+            ${dias !== 1 ? "dias" : "dia"}
         </span>
     `;
 
@@ -2001,14 +2057,30 @@ function obterTempoRestante(postit) {
 
 
 /* ============================================
-   NOTIFICAÇÕES DO NAVEGADOR
+   NOTIFICAÇÕES
 ============================================ */
 
 function verificarPermissaoNotificacao() {
 
+    const botao =
+        document.getElementById(
+            "btnAtivarNotificacoes"
+        );
+
+
     if (
         !("Notification" in window)
     ) {
+
+        if (botao) {
+
+            botao.textContent =
+                "🔕 Não suportado";
+
+            botao.disabled =
+                true;
+
+        }
 
         return;
 
@@ -2017,21 +2089,42 @@ function verificarPermissaoNotificacao() {
 
     if (
         Notification.permission ===
-        "default"
+        "granted"
     ) {
 
-        /*
-            O navegador só solicita
-            permissão quando o usuário
-            interagir com o sistema.
-        */
+        if (botao) {
+
+            botao.textContent =
+                "🔔 Notificações ativas";
+
+            botao.classList.add(
+                "ativo"
+            );
+
+        }
 
         return;
 
     }
 
+
+    if (botao) {
+
+        botao.textContent =
+            "🔔 Ativar notificações";
+
+        botao.classList.remove(
+            "ativo"
+        );
+
+    }
+
 }
 
+
+/* ============================================
+   SOLICITAR PERMISSÃO
+============================================ */
 
 function solicitarPermissaoNotificacao() {
 
@@ -2055,9 +2148,11 @@ function solicitarPermissaoNotificacao() {
     ) {
 
         mostrarNotificacao(
-            "Notificações ativadas",
-            "Você receberá avisos dos seus lembretes."
+            "Notificações já estão ativas",
+            "Você receberá os avisos dos seus lembretes."
         );
+
+        verificarPermissaoNotificacao();
 
         return;
 
@@ -2068,17 +2163,43 @@ function solicitarPermissaoNotificacao() {
         .then(
             permissao => {
 
+                verificarPermissaoNotificacao();
+
+
                 if (
                     permissao ===
                     "granted"
                 ) {
 
                     mostrarNotificacao(
-                        "Notificações ativadas",
-                        "Os avisos estão habilitados."
+                        "🔔 Notificações ativadas",
+                        "Agora você receberá os avisos dos seus lembretes."
+                    );
+
+
+                    enviarNotificacaoNavegador(
+                        "Post-its Administrativos",
+                        "As notificações foram ativadas com sucesso."
+                    );
+
+                } else {
+
+                    mostrarNotificacao(
+                        "Notificações bloqueadas",
+                        "Permita as notificações nas configurações do navegador."
                     );
 
                 }
+
+            }
+        )
+        .catch(
+            erro => {
+
+                console.error(
+                    "Erro ao solicitar permissão:",
+                    erro
+                );
 
             }
         );
@@ -2087,7 +2208,7 @@ function solicitarPermissaoNotificacao() {
 
 
 /* ============================================
-   VERIFICAR NOTIFICAÇÕES
+   VERIFICAR LEMBRETES
 ============================================ */
 
 function verificarNotificacoes() {
@@ -2136,7 +2257,7 @@ function verificarNotificacoes() {
 
 
 /* ============================================
-   VERIFICAR NOTIFICAÇÃO DO POST-IT
+   VERIFICAR POST-IT
 ============================================ */
 
 function verificarNotificacaoPostit(
@@ -2145,7 +2266,9 @@ function verificarNotificacaoPostit(
 ) {
 
     const dataHora =
-        obterDataHora(postit);
+        obterDataHora(
+            postit
+        );
 
 
     const diferenca =
@@ -2160,7 +2283,9 @@ function verificarNotificacaoPostit(
 
 
     const aviso =
-        Number(postit.aviso || 0);
+        Number(
+            postit.aviso || 10
+        );
 
 
     if (
@@ -2173,7 +2298,9 @@ function verificarNotificacaoPostit(
 
 
         const jaNotificado =
-            localStorage.getItem(chave);
+            localStorage.getItem(
+                chave
+            );
 
 
         if (jaNotificado) {
@@ -2189,7 +2316,9 @@ function verificarNotificacaoPostit(
 
         const mensagem =
             minutos <= 1
+
                 ? "Seu lembrete está começando agora."
+
                 : `Começa em aproximadamente ${Math.ceil(minutos)} minutos.`;
 
 
@@ -2200,7 +2329,7 @@ function verificarNotificacaoPostit(
 
 
         enviarNotificacaoNavegador(
-            postit.titulo,
+            `📝 ${postit.titulo}`,
             mensagem
         );
 
@@ -2242,15 +2371,14 @@ function enviarNotificacaoNavegador(
         new Notification(
             titulo,
             {
-                body: mensagem,
-                icon: "📝"
+                body: mensagem
             }
         );
 
     } catch (erro) {
 
         console.warn(
-            "Não foi possível criar notificação:",
+            "Erro na notificação:",
             erro
         );
 
@@ -2262,9 +2390,6 @@ function enviarNotificacaoNavegador(
 /* ============================================
    NOTIFICAÇÃO INTERNA
 ============================================ */
-
-let temporizadorNotificacao = null;
-
 
 function mostrarNotificacao(
     titulo,
@@ -2374,10 +2499,12 @@ function gerarId() {
 
 
 /* ============================================
-   DATA DO POST-IT
+   DATA/HORA POST-IT
 ============================================ */
 
-function obterDataHora(postit) {
+function obterDataHora(
+    postit
+) {
 
     if (
         !postit.data ||
@@ -2422,10 +2549,12 @@ function obterDataHora(postit) {
 
 
 /* ============================================
-   FORMATAÇÃO DE DATA
+   FORMATAÇÃO
 ============================================ */
 
-function formatarData(data) {
+function formatarData(
+    data
+) {
 
     return data.toLocaleDateString(
         "pt-BR"
@@ -2434,10 +2563,14 @@ function formatarData(data) {
 }
 
 
-function formatarDataBR(dataString) {
+function formatarDataBR(
+    dataString
+) {
 
     if (!dataString) {
+
         return "--/--/----";
+
     }
 
 
@@ -2445,19 +2578,25 @@ function formatarDataBR(dataString) {
         dataString.split("-");
 
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !== 3
+    ) {
 
         return dataString;
 
     }
 
 
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return `
+        ${partes[2]}/${partes[1]}/${partes[0]}
+    `;
 
 }
 
 
-function formatarDataInput(data) {
+function formatarDataInput(
+    data
+) {
 
     const ano =
         data.getFullYear();
@@ -2466,25 +2605,31 @@ function formatarDataInput(data) {
     const mes =
         String(
             data.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const dia =
         String(
             data.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
-    return `${ano}-${mes}-${dia}`;
+    return `
+        ${ano}-${mes}-${dia}
+    `.trim();
 
 }
 
 
-/* ============================================
-   FORMATAÇÃO DE HORA
-============================================ */
-
-function formatarHora(data) {
+function formatarHora(
+    data
+) {
 
     return data.toLocaleTimeString(
         "pt-BR",
@@ -2497,18 +2642,26 @@ function formatarHora(data) {
 }
 
 
-function formatarHoraInput(data) {
+function formatarHoraInput(
+    data
+) {
 
     const hora =
         String(
             data.getHours()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const minuto =
         String(
             data.getMinutes()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     return `${hora}:${minuto}`;
@@ -2516,14 +2669,14 @@ function formatarHoraInput(data) {
 }
 
 
-/* ============================================
-   DATA + HORA
-============================================ */
-
-function formatarDataHora(valor) {
+function formatarDataHora(
+    valor
+) {
 
     if (!valor) {
+
         return "--/--/---- --:--";
+
     }
 
 
@@ -2542,7 +2695,11 @@ function formatarDataHora(valor) {
     }
 
 
-    return `${formatarData(data)} às ${formatarHora(data)}`;
+    return `
+        ${formatarData(data)}
+        às
+        ${formatarHora(data)}
+    `;
 
 }
 
@@ -2557,13 +2714,17 @@ function obterTextoPrioridade(
 
     const textos = {
 
-        urgente: "Urgente",
+        urgente:
+            "Urgente",
 
-        importante: "Importante",
+        importante:
+            "Importante",
 
-        normal: "Normal",
+        normal:
+            "Normal",
 
-        baixa: "Baixa"
+        baixa:
+            "Baixa"
 
     };
 
@@ -2612,10 +2773,12 @@ function obterTextoCategoria(
 
 
 /* ============================================
-   ESCAPAR HTML
+   SEGURANÇA HTML
 ============================================ */
 
-function escaparHTML(valor) {
+function escaparHTML(
+    valor
+) {
 
     if (
         valor === null ||
@@ -2628,22 +2791,27 @@ function escaparHTML(valor) {
 
 
     return String(valor)
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
@@ -2662,7 +2830,9 @@ function definirTexto(
 ) {
 
     const elemento =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
 
     if (elemento) {
@@ -2676,7 +2846,7 @@ function definirTexto(
 
 
 /* ============================================
-   EXPOSIÇÃO PARA DEBUG
+   ACESSO PARA TESTES
 ============================================ */
 
 window.PostitsApp = {
@@ -2684,7 +2854,10 @@ window.PostitsApp = {
     listar: () =>
         [...postits],
 
-    salvar: salvarPostits,
+
+    salvar:
+        salvarPostits,
+
 
     recarregar: () => {
 
@@ -2693,6 +2866,7 @@ window.PostitsApp = {
         atualizarInterface();
 
     },
+
 
     limparTudo: () => {
 
