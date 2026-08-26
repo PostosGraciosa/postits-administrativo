@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -20,9 +21,12 @@
         rel="stylesheet"
         href="css/style.css"
     >
+
 </head>
 
+
 <body>
+
 
     <!-- =========================================
          CABEÇALHO
@@ -32,15 +36,22 @@
 
         <div class="topo-conteudo">
 
-            <div class="marca">
+            <div class="identidade">
 
-                <div class="marca-icone">
+                <div class="logo">
                     📝
                 </div>
 
                 <div>
-                    <h1>Post-its</h1>
-                    <span>Central de Lembretes</span>
+
+                    <h1>
+                        Post-its Administrativos
+                    </h1>
+
+                    <p>
+                        Organize seus lembretes e tarefas
+                    </p>
+
                 </div>
 
             </div>
@@ -49,21 +60,49 @@
             <div class="topo-acoes">
 
                 <div class="data-atual">
-                    <span id="diaSemana">---</span>
-                    <strong id="dataAtual">--/--/----</strong>
+
+                    <span id="diaSemana">
+                        ---
+                    </span>
+
+                    <strong id="dataAtual">
+                        --/--/----
+                    </strong>
+
                 </div>
 
+
                 <div class="hora-atual">
-                    <span id="horaAtual">--:--</span>
+
+                    <span id="horaAtual">
+                        --:--
+                    </span>
+
                 </div>
+
+
+                <button
+                    type="button"
+                    class="btn-notificacoes"
+                    id="btnAtivarNotificacoes"
+                    title="Ativar notificações"
+                >
+                    🔔 Ativar notificações
+                </button>
+
 
                 <button
                     type="button"
                     class="btn-novo"
                     id="btnNovoPostit"
                 >
-                    <span>＋</span>
+
+                    <span>
+                        ＋
+                    </span>
+
                     Novo Post-it
+
                 </button>
 
             </div>
@@ -73,11 +112,12 @@
     </header>
 
 
+
     <!-- =========================================
          CONTEÚDO PRINCIPAL
     ========================================== -->
 
-    <main class="container">
+    <main class="conteudo">
 
 
         <!-- =====================================
@@ -86,71 +126,106 @@
 
         <section class="resumo">
 
-            <div class="card-resumo">
+            <div class="resumo-card">
 
-                <div class="resumo-icone">
+                <span class="resumo-icone">
                     📋
-                </div>
+                </span>
 
-                <div class="resumo-info">
-                    <span>Total</span>
-                    <strong id="totalPostits">0</strong>
-                </div>
+                <div>
 
-            </div>
+                    <small>
+                        Pendentes
+                    </small>
 
+                    <strong id="totalPostits">
+                        0
+                    </strong>
 
-            <div class="card-resumo">
-
-                <div class="resumo-icone">
-                    ⚠️
-                </div>
-
-                <div class="resumo-info">
-                    <span>Atrasados</span>
-                    <strong id="totalAtrasados">0</strong>
                 </div>
 
             </div>
 
 
-            <div class="card-resumo">
+            <div class="resumo-card atrasados">
 
-                <div class="resumo-icone">
-                    📅
-                </div>
+                <span class="resumo-icone">
+                    🔴
+                </span>
 
-                <div class="resumo-info">
-                    <span>Para hoje</span>
-                    <strong id="totalHoje">0</strong>
-                </div>
+                <div>
 
-            </div>
+                    <small>
+                        Atrasados
+                    </small>
 
+                    <strong id="totalAtrasados">
+                        0
+                    </strong>
 
-            <div class="card-resumo">
-
-                <div class="resumo-icone">
-                    ⏰
-                </div>
-
-                <div class="resumo-info">
-                    <span>Próximos</span>
-                    <strong id="totalProximos">0</strong>
                 </div>
 
             </div>
 
 
-            <div class="card-resumo concluido">
+            <div class="resumo-card hoje">
 
-                <div class="resumo-icone">
+                <span class="resumo-icone">
+                    🟠
+                </span>
+
+                <div>
+
+                    <small>
+                        Hoje
+                    </small>
+
+                    <strong id="totalHoje">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="resumo-card proximos">
+
+                <span class="resumo-icone">
+                    🔵
+                </span>
+
+                <div>
+
+                    <small>
+                        Próximos
+                    </small>
+
+                    <strong id="totalProximos">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="resumo-card concluidos">
+
+                <span class="resumo-icone">
                     ✅
-                </div>
+                </span>
 
-                <div class="resumo-info">
-                    <span>Concluídos</span>
-                    <strong id="totalConcluidos">0</strong>
+                <div>
+
+                    <small>
+                        Concluídos
+                    </small>
+
+                    <strong id="totalConcluidos">
+                        0
+                    </strong>
+
                 </div>
 
             </div>
@@ -158,15 +233,16 @@
         </section>
 
 
+
         <!-- =====================================
-             BARRA DE FERRAMENTAS
+             FILTROS
         ====================================== -->
 
-        <section class="barra-ferramentas">
+        <section class="painel-filtros">
 
             <div class="pesquisa">
 
-                <span class="pesquisa-icone">
+                <span>
                     🔎
                 </span>
 
@@ -180,134 +256,107 @@
             </div>
 
 
-            <div class="filtros">
+            <select id="filtroStatus">
 
-                <select id="filtroStatus">
+                <option value="todos">
+                    Todos os status
+                </option>
 
-                    <option value="todos">
-                        Todos os status
-                    </option>
+                <option value="atrasado">
+                    🔴 Atrasados
+                </option>
 
-                    <option value="pendente">
-                        🟡 Pendentes
-                    </option>
+                <option value="hoje">
+                    🟠 Hoje
+                </option>
 
-                    <option value="atrasado">
-                        🔴 Atrasados
-                    </option>
+                <option value="proximo">
+                    🔵 Próximos
+                </option>
 
-                    <option value="hoje">
-                        🟠 Hoje
-                    </option>
+                <option value="pendente">
+                    🟡 Pendentes
+                </option>
 
-                    <option value="proximo">
-                        🔵 Próximos
-                    </option>
+                <option value="concluido">
+                    🟢 Concluídos
+                </option>
 
-                    <option value="concluido">
-                        🟢 Concluídos
-                    </option>
-
-                </select>
+            </select>
 
 
-                <select id="filtroPrioridade">
+            <select id="filtroPrioridade">
 
-                    <option value="todas">
-                        Todas as prioridades
-                    </option>
+                <option value="todas">
+                    Todas as prioridades
+                </option>
 
-                    <option value="urgente">
-                        🔴 Urgente
-                    </option>
+                <option value="urgente">
+                    🔴 Urgente
+                </option>
 
-                    <option value="importante">
-                        🟠 Importante
-                    </option>
+                <option value="importante">
+                    🟠 Importante
+                </option>
 
-                    <option value="normal">
-                        🟡 Normal
-                    </option>
+                <option value="normal">
+                    🔵 Normal
+                </option>
 
-                    <option value="baixa">
-                        🟢 Baixa
-                    </option>
+                <option value="baixa">
+                    ⚪ Baixa
+                </option>
 
-                </select>
+            </select>
 
 
-                <select id="filtroCategoria">
+            <select id="filtroCategoria">
 
-                    <option value="todas">
-                        Todos os setores
-                    </option>
+                <option value="todas">
+                    Todas as categorias
+                </option>
 
-                    <option value="administrativo">
-                        Administrativo
-                    </option>
+                <option value="administrativo">
+                    Administrativo
+                </option>
 
-                    <option value="financeiro">
-                        Financeiro
-                    </option>
+                <option value="financeiro">
+                    Financeiro
+                </option>
 
-                    <option value="rh">
-                        RH
-                    </option>
+                <option value="rh">
+                    RH
+                </option>
 
-                    <option value="pista">
-                        Pista
-                    </option>
+                <option value="pista">
+                    Pista
+                </option>
 
-                    <option value="conveniencia">
-                        Loja de Conveniência
-                    </option>
+                <option value="conveniencia">
+                    Loja de Conveniência
+                </option>
 
-                    <option value="outros">
-                        Outros
-                    </option>
+                <option value="outros">
+                    Outros
+                </option>
 
-                </select>
-
-            </div>
+            </select>
 
         </section>
 
 
-        <!-- =====================================
-             ALERTAS
-        ====================================== -->
-
-        <section
-            class="area-alertas"
-            id="areaAlertas"
-        >
-
-            <!--
-                Os alertas serão inseridos
-                automaticamente pelo JavaScript.
-            -->
-
-        </section>
-
 
         <!-- =====================================
-             POST-ITS
+             TÍTULO DA LISTA
         ====================================== -->
 
-        <section class="secao-postits">
+        <div class="lista-cabecalho">
 
-            <div class="titulo-secao">
+            <div>
 
-                <div>
-
-                    <h2>Meus Post-its</h2>
-
-                    <p>
-                        Seus lembretes permanecem salvos mesmo
-                        depois de fechar o sistema.
-                    </p>
-
-                </div>
+                <h2>
+                    Meus Post-its
+                </h2>
 
                 <span id="contadorExibidos">
                     0 registros
@@ -315,73 +364,79 @@
 
             </div>
 
+        </div>
 
-            <div
-                class="grade-postits"
-                id="listaPostits"
-            >
 
-                <!--
-                    Os post-its serão criados
-                    automaticamente pelo JavaScript.
-                -->
 
+        <!-- =====================================
+             LISTA
+        ====================================== -->
+
+        <section
+            class="lista-postits"
+            id="listaPostits"
+        >
+        </section>
+
+
+
+        <!-- =====================================
+             ESTADO VAZIO
+        ====================================== -->
+
+        <section
+            class="estado-vazio"
+            id="estadoVazio"
+        >
+
+            <div class="estado-icone">
+                📝
             </div>
 
+            <h3>
+                Nenhum post-it encontrado
+            </h3>
 
-            <!-- =================================
-                 ESTADO VAZIO
-            ================================== -->
+            <p>
+                Crie um novo lembrete para começar.
+            </p>
 
-            <div
-                class="estado-vazio"
-                id="estadoVazio"
+            <button
+                type="button"
+                class="btn-vazio"
+                id="btnNovoPostitVazio"
             >
-
-                <div class="estado-icone">
-                    📝
-                </div>
-
-                <h3>Nenhum post-it encontrado</h3>
-
-                <p>
-                    Crie seu primeiro lembrete para começar.
-                </p>
-
-                <button
-                    type="button"
-                    class="btn-novo-vazio"
-                    id="btnNovoPostitVazio"
-                >
-                    ＋ Criar Post-it
-                </button>
-
-            </div>
+                ＋ Criar Post-it
+            </button>
 
         </section>
+
 
 
         <!-- =====================================
              HISTÓRICO
         ====================================== -->
 
-        <section class="secao-historico">
+        <section class="historico">
 
-            <div class="titulo-secao">
+            <div class="historico-cabecalho">
 
                 <div>
 
-                    <h2>Histórico de Concluídos</h2>
+                    <h2>
+                        Histórico
+                    </h2>
 
                     <p>
-                        Registro dos lembretes que já foram concluídos.
+                        Registros concluídos
                     </p>
 
                 </div>
 
+
                 <button
                     type="button"
-                    class="btn-toggle-historico"
+                    class="btn-historico"
                     id="btnToggleHistorico"
                 >
                     Mostrar histórico
@@ -394,12 +449,6 @@
                 class="historico-lista"
                 id="historicoLista"
             >
-
-                <!--
-                    O histórico será preenchido
-                    pelo JavaScript.
-                -->
-
             </div>
 
         </section>
@@ -407,8 +456,9 @@
     </main>
 
 
+
     <!-- =========================================
-         MODAL — NOVO / EDITAR POST-IT
+         MODAL POST-IT
     ========================================== -->
 
     <div
@@ -421,10 +471,9 @@
 
 
         <div
-            class="modal-conteudo"
+            class="modal-caixa"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="tituloModal"
         >
 
             <div class="modal-cabecalho">
@@ -436,10 +485,11 @@
                     </h2>
 
                     <p>
-                        Cadastre um novo lembrete.
+                        Cadastre seu lembrete
                     </p>
 
                 </div>
+
 
                 <button
                     type="button"
@@ -453,11 +503,9 @@
             </div>
 
 
-            <!-- =================================
-                 FORMULÁRIO
-            ================================== -->
 
             <form id="formPostit">
+
 
                 <input
                     type="hidden"
@@ -468,19 +516,19 @@
                 <div class="campo">
 
                     <label for="titulo">
-                        Título
+                        Título *
                     </label>
 
                     <input
                         type="text"
                         id="titulo"
-                        name="titulo"
-                        placeholder="Ex.: Conferir fechamento"
-                        maxlength="100"
+                        placeholder="Ex.: Conferir fechamento do caixa"
+                        maxlength="120"
                         required
                     >
 
                 </div>
+
 
 
                 <div class="campo">
@@ -491,27 +539,27 @@
 
                     <textarea
                         id="descricao"
-                        name="descricao"
                         rows="4"
-                        placeholder="Digite os detalhes do lembrete..."
+                        placeholder="Detalhes do lembrete..."
                         maxlength="500"
                     ></textarea>
 
                 </div>
 
 
+
                 <div class="linha-campos">
+
 
                     <div class="campo">
 
                         <label for="data">
-                            Data
+                            Data *
                         </label>
 
                         <input
                             type="date"
                             id="data"
-                            name="data"
                             required
                         >
 
@@ -521,13 +569,12 @@
                     <div class="campo">
 
                         <label for="hora">
-                            Hora
+                            Hora *
                         </label>
 
                         <input
                             type="time"
                             id="hora"
-                            name="hora"
                             required
                         >
 
@@ -536,7 +583,9 @@
                 </div>
 
 
+
                 <div class="linha-campos">
+
 
                     <div class="campo">
 
@@ -544,11 +593,11 @@
                             Prioridade
                         </label>
 
-                        <select
-                            id="prioridade"
-                            name="prioridade"
-                            required
-                        >
+                        <select id="prioridade">
+
+                            <option value="normal">
+                                🔵 Normal
+                            </option>
 
                             <option value="urgente">
                                 🔴 Urgente
@@ -558,15 +607,8 @@
                                 🟠 Importante
                             </option>
 
-                            <option
-                                value="normal"
-                                selected
-                            >
-                                🟡 Normal
-                            </option>
-
                             <option value="baixa">
-                                🟢 Baixa
+                                ⚪ Baixa
                             </option>
 
                         </select>
@@ -577,14 +619,10 @@
                     <div class="campo">
 
                         <label for="categoria">
-                            Setor / Categoria
+                            Categoria
                         </label>
 
-                        <select
-                            id="categoria"
-                            name="categoria"
-                            required
-                        >
+                        <select id="categoria">
 
                             <option value="administrativo">
                                 Administrativo
@@ -617,33 +655,31 @@
                 </div>
 
 
-                <!-- =============================
-                     AVISO
-                ============================== -->
 
                 <div class="campo">
 
                     <label for="aviso">
-                        Avisar antes
+                        Avisar com antecedência
                     </label>
 
-                    <select
-                        id="aviso"
-                        name="aviso"
-                    >
+                    <select id="aviso">
 
-                        <option value="0">
-                            No horário
+                        <option value="5">
+                            5 minutos antes
+                        </option>
+
+                        <option
+                            value="10"
+                            selected
+                        >
+                            10 minutos antes
                         </option>
 
                         <option value="15">
                             15 minutos antes
                         </option>
 
-                        <option
-                            value="30"
-                            selected
-                        >
+                        <option value="30">
                             30 minutos antes
                         </option>
 
@@ -664,9 +700,14 @@
                 </div>
 
 
-                <!-- =============================
-                     BOTÕES
-                ============================== -->
+
+                <div class="aviso-info">
+
+                    🔔 O sistema avisará quando o lembrete estiver próximo do horário.
+
+                </div>
+
+
 
                 <div class="modal-acoes">
 
@@ -677,6 +718,7 @@
                     >
                         Cancelar
                     </button>
+
 
                     <button
                         type="submit"
@@ -694,12 +736,13 @@
     </div>
 
 
+
     <!-- =========================================
-         MODAL — CONFIRMAÇÃO DE EXCLUSÃO
+         MODAL CONFIRMAÇÃO
     ========================================== -->
 
     <div
-        class="modal modal-confirmacao"
+        class="modal"
         id="modalConfirmacao"
         aria-hidden="true"
     >
@@ -707,35 +750,47 @@
         <div class="modal-fundo"></div>
 
 
-        <div class="modal-conteudo pequeno">
+        <div
+            class="modal-caixa modal-pequeno"
+            role="dialog"
+            aria-modal="true"
+        >
 
-            <div class="confirmacao-icone">
-                🗑️
-            </div>
+            <div class="confirmacao">
 
-            <h2>Excluir Post-it?</h2>
+                <div class="confirmacao-icone">
+                    🗑️
+                </div>
 
-            <p>
-                Essa ação não poderá ser desfeita.
-            </p>
+                <h2>
+                    Excluir Post-it?
+                </h2>
 
-            <div class="modal-acoes">
+                <p>
+                    Essa ação não poderá ser desfeita.
+                </p>
 
-                <button
-                    type="button"
-                    class="btn-cancelar"
-                    id="btnCancelarExclusao"
-                >
-                    Cancelar
-                </button>
 
-                <button
-                    type="button"
-                    class="btn-excluir-confirmar"
-                    id="btnConfirmarExclusao"
-                >
-                    Excluir
-                </button>
+                <div class="modal-acoes">
+
+                    <button
+                        type="button"
+                        class="btn-cancelar"
+                        id="btnCancelarExclusao"
+                    >
+                        Cancelar
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-excluir-confirmar"
+                        id="btnConfirmarExclusao"
+                    >
+                        🗑️ Excluir
+                    </button>
+
+                </div>
 
             </div>
 
@@ -744,38 +799,40 @@
     </div>
 
 
+
     <!-- =========================================
-         NOTIFICAÇÃO
+         NOTIFICAÇÃO INTERNA
     ========================================== -->
 
     <div
         class="notificacao"
         id="notificacao"
-        role="status"
-        aria-live="polite"
+        role="alert"
     >
 
         <div class="notificacao-icone">
             🔔
         </div>
 
+
         <div class="notificacao-conteudo">
 
             <strong id="notificacaoTitulo">
-                Lembrete
+                Notificação
             </strong>
 
             <span id="notificacaoMensagem">
-                Você possui um lembrete.
+                Mensagem
             </span>
 
         </div>
+
 
         <button
             type="button"
             class="notificacao-fechar"
             id="btnFecharNotificacao"
-            aria-label="Fechar notificação"
+            aria-label="Fechar"
         >
             ×
         </button>
@@ -783,28 +840,15 @@
     </div>
 
 
-    <!-- =========================================
-         RODAPÉ
-    ========================================== -->
-
-    <footer class="rodape">
-
-        <span>
-            📝 Post-its Administrativos
-        </span>
-
-        <span>
-            Seus lembretes ficam salvos automaticamente.
-        </span>
-
-    </footer>
-
 
     <!-- =========================================
          JAVASCRIPT
     ========================================== -->
 
-    <script src="js/app.js"></script>
+    <script
+        src="js/app.js"
+    ></script>
+
 
 </body>
 
