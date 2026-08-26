@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Sistema de Post-its e lembretes administrativos"
+    >
+
+    <title>Post-its Administrativos</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <!-- =========================================
+         CABEÇALHO
+    ========================================== -->
+
+    <header class="topo">
+
+        <div class="topo-conteudo">
+
+            <div class="marca">
+
+                <div class="marca-icone">
+                    📝
+                </div>
+
+                <div>
+                    <h1>Post-its</h1>
+                    <span>Central de Lembretes</span>
+                </div>
+
+            </div>
+
+
+            <div class="topo-acoes">
+
+                <div class="data-atual">
+                    <span id="diaSemana">---</span>
+                    <strong id="dataAtual">--/--/----</strong>
+                </div>
+
+                <div class="hora-atual">
+                    <span id="horaAtual">--:--</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-novo"
+                    id="btnNovoPostit"
+                >
+                    <span>＋</span>
+                    Novo Post-it
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         CONTEÚDO PRINCIPAL
+    ========================================== -->
+
+    <main class="container">
+
+
+        <!-- =====================================
+             RESUMO
+        ====================================== -->
+
+        <section class="resumo">
+
+            <div class="card-resumo">
+
+                <div class="resumo-icone">
+                    📋
+                </div>
+
+                <div class="resumo-info">
+                    <span>Total</span>
+                    <strong id="totalPostits">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="card-resumo">
+
+                <div class="resumo-icone">
+                    ⚠️
+                </div>
+
+                <div class="resumo-info">
+                    <span>Atrasados</span>
+                    <strong id="totalAtrasados">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="card-resumo">
+
+                <div class="resumo-icone">
+                    📅
+                </div>
+
+                <div class="resumo-info">
+                    <span>Para hoje</span>
+                    <strong id="totalHoje">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="card-resumo">
+
+                <div class="resumo-icone">
+                    ⏰
+                </div>
+
+                <div class="resumo-info">
+                    <span>Próximos</span>
+                    <strong id="totalProximos">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="card-resumo concluido">
+
+                <div class="resumo-icone">
+                    ✅
+                </div>
+
+                <div class="resumo-info">
+                    <span>Concluídos</span>
+                    <strong id="totalConcluidos">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             BARRA DE FERRAMENTAS
+        ====================================== -->
+
+        <section class="barra-ferramentas">
+
+            <div class="pesquisa">
+
+                <span class="pesquisa-icone">
+                    🔎
+                </span>
+
+                <input
+                    type="search"
+                    id="campoPesquisa"
+                    placeholder="Pesquisar post-it..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="filtros">
+
+                <select id="filtroStatus">
+
+                    <option value="todos">
+                        Todos os status
+                    </option>
+
+                    <option value="pendente">
+                        🟡 Pendentes
+                    </option>
+
+                    <option value="atrasado">
+                        🔴 Atrasados
+                    </option>
+
+                    <option value="hoje">
+                        🟠 Hoje
+                    </option>
+
+                    <option value="proximo">
+                        🔵 Próximos
+                    </option>
+
+                    <option value="concluido">
+                        🟢 Concluídos
+                    </option>
+
+                </select>
+
+
+                <select id="filtroPrioridade">
+
+                    <option value="todas">
+                        Todas as prioridades
+                    </option>
+
+                    <option value="urgente">
+                        🔴 Urgente
+                    </option>
+
+                    <option value="importante">
+                        🟠 Importante
+                    </option>
+
+                    <option value="normal">
+                        🟡 Normal
+                    </option>
+
+                    <option value="baixa">
+                        🟢 Baixa
+                    </option>
+
+                </select>
+
+
+                <select id="filtroCategoria">
+
+                    <option value="todas">
+                        Todos os setores
+                    </option>
+
+                    <option value="administrativo">
+                        Administrativo
+                    </option>
+
+                    <option value="financeiro">
+                        Financeiro
+                    </option>
+
+                    <option value="rh">
+                        RH
+                    </option>
+
+                    <option value="pista">
+                        Pista
+                    </option>
+
+                    <option value="conveniencia">
+                        Loja de Conveniência
+                    </option>
+
+                    <option value="outros">
+                        Outros
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             ALERTAS
+        ====================================== -->
+
+        <section
+            class="area-alertas"
+            id="areaAlertas"
+        >
+
+            <!--
+                Os alertas serão inseridos
+                automaticamente pelo JavaScript.
+            -->
+
+        </section>
+
+
+        <!-- =====================================
+             POST-ITS
+        ====================================== -->
+
+        <section class="secao-postits">
+
+            <div class="titulo-secao">
+
+                <div>
+
+                    <h2>Meus Post-its</h2>
+
+                    <p>
+                        Seus lembretes permanecem salvos mesmo
+                        depois de fechar o sistema.
+                    </p>
+
+                </div>
+
+                <span id="contadorExibidos">
+                    0 registros
+                </span>
+
+            </div>
+
+
+            <div
+                class="grade-postits"
+                id="listaPostits"
+            >
+
+                <!--
+                    Os post-its serão criados
+                    automaticamente pelo JavaScript.
+                -->
+
+            </div>
+
+
+            <!-- =================================
+                 ESTADO VAZIO
+            ================================== -->
+
+            <div
+                class="estado-vazio"
+                id="estadoVazio"
+            >
+
+                <div class="estado-icone">
+                    📝
+                </div>
+
+                <h3>Nenhum post-it encontrado</h3>
+
+                <p>
+                    Crie seu primeiro lembrete para começar.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn-novo-vazio"
+                    id="btnNovoPostitVazio"
+                >
+                    ＋ Criar Post-it
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             HISTÓRICO
+        ====================================== -->
+
+        <section class="secao-historico">
+
+            <div class="titulo-secao">
+
+                <div>
+
+                    <h2>Histórico de Concluídos</h2>
+
+                    <p>
+                        Registro dos lembretes que já foram concluídos.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-toggle-historico"
+                    id="btnToggleHistorico"
+                >
+                    Mostrar histórico
+                </button>
+
+            </div>
+
+
+            <div
+                class="historico-lista"
+                id="historicoLista"
+            >
+
+                <!--
+                    O histórico será preenchido
+                    pelo JavaScript.
+                -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         MODAL — NOVO / EDITAR POST-IT
+    ========================================== -->
+
+    <div
+        class="modal"
+        id="modalPostit"
+        aria-hidden="true"
+    >
+
+        <div class="modal-fundo"></div>
+
+
+        <div
+            class="modal-conteudo"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloModal"
+        >
+
+            <div class="modal-cabecalho">
+
+                <div>
+
+                    <h2 id="tituloModal">
+                        Novo Post-it
+                    </h2>
+
+                    <p>
+                        Cadastre um novo lembrete.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-fechar"
+                    id="btnFecharModal"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- =================================
+                 FORMULÁRIO
+            ================================== -->
+
+            <form id="formPostit">
+
+                <input
+                    type="hidden"
+                    id="postitId"
+                >
+
+
+                <div class="campo">
+
+                    <label for="titulo">
+                        Título
+                    </label>
+
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        placeholder="Ex.: Conferir fechamento"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        name="descricao"
+                        rows="4"
+                        placeholder="Digite os detalhes do lembrete..."
+                        maxlength="500"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="linha-campos">
+
+                    <div class="campo">
+
+                        <label for="data">
+                            Data
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data"
+                            name="data"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="hora">
+                            Hora
+                        </label>
+
+                        <input
+                            type="time"
+                            id="hora"
+                            name="hora"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="linha-campos">
+
+                    <div class="campo">
+
+                        <label for="prioridade">
+                            Prioridade
+                        </label>
+
+                        <select
+                            id="prioridade"
+                            name="prioridade"
+                            required
+                        >
+
+                            <option value="urgente">
+                                🔴 Urgente
+                            </option>
+
+                            <option value="importante">
+                                🟠 Importante
+                            </option>
+
+                            <option
+                                value="normal"
+                                selected
+                            >
+                                🟡 Normal
+                            </option>
+
+                            <option value="baixa">
+                                🟢 Baixa
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="categoria">
+                            Setor / Categoria
+                        </label>
+
+                        <select
+                            id="categoria"
+                            name="categoria"
+                            required
+                        >
+
+                            <option value="administrativo">
+                                Administrativo
+                            </option>
+
+                            <option value="financeiro">
+                                Financeiro
+                            </option>
+
+                            <option value="rh">
+                                RH
+                            </option>
+
+                            <option value="pista">
+                                Pista
+                            </option>
+
+                            <option value="conveniencia">
+                                Loja de Conveniência
+                            </option>
+
+                            <option value="outros">
+                                Outros
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================
+                     AVISO
+                ============================== -->
+
+                <div class="campo">
+
+                    <label for="aviso">
+                        Avisar antes
+                    </label>
+
+                    <select
+                        id="aviso"
+                        name="aviso"
+                    >
+
+                        <option value="0">
+                            No horário
+                        </option>
+
+                        <option value="15">
+                            15 minutos antes
+                        </option>
+
+                        <option
+                            value="30"
+                            selected
+                        >
+                            30 minutos antes
+                        </option>
+
+                        <option value="60">
+                            1 hora antes
+                        </option>
+
+                        <option value="120">
+                            2 horas antes
+                        </option>
+
+                        <option value="1440">
+                            1 dia antes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================
+                     BOTÕES
+                ============================== -->
+
+                <div class="modal-acoes">
+
+                    <button
+                        type="button"
+                        class="btn-cancelar"
+                        id="btnCancelarModal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn-salvar"
+                    >
+                        💾 Salvar Post-it
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MODAL — CONFIRMAÇÃO DE EXCLUSÃO
+    ========================================== -->
+
+    <div
+        class="modal modal-confirmacao"
+        id="modalConfirmacao"
+        aria-hidden="true"
+    >
+
+        <div class="modal-fundo"></div>
+
+
+        <div class="modal-conteudo pequeno">
+
+            <div class="confirmacao-icone">
+                🗑️
+            </div>
+
+            <h2>Excluir Post-it?</h2>
+
+            <p>
+                Essa ação não poderá ser desfeita.
+            </p>
+
+            <div class="modal-acoes">
+
+                <button
+                    type="button"
+                    class="btn-cancelar"
+                    id="btnCancelarExclusao"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-excluir-confirmar"
+                    id="btnConfirmarExclusao"
+                >
+                    Excluir
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         NOTIFICAÇÃO
+    ========================================== -->
+
+    <div
+        class="notificacao"
+        id="notificacao"
+        role="status"
+        aria-live="polite"
+    >
+
+        <div class="notificacao-icone">
+            🔔
+        </div>
+
+        <div class="notificacao-conteudo">
+
+            <strong id="notificacaoTitulo">
+                Lembrete
+            </strong>
+
+            <span id="notificacaoMensagem">
+                Você possui um lembrete.
+            </span>
+
+        </div>
+
+        <button
+            type="button"
+            class="notificacao-fechar"
+            id="btnFecharNotificacao"
+            aria-label="Fechar notificação"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <!-- =========================================
+         RODAPÉ
+    ========================================== -->
+
+    <footer class="rodape">
+
+        <span>
+            📝 Post-its Administrativos
+        </span>
+
+        <span>
+            Seus lembretes ficam salvos automaticamente.
+        </span>
+
+    </footer>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
