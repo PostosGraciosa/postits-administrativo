@@ -2437,6 +2437,21 @@ function mostrarNotificacao(
         "visivel"
     );
 
+
+    clearTimeout(
+        temporizadorNotificacao
+    );
+
+
+    temporizadorNotificacao =
+        setTimeout(
+            esconderNotificacao,
+            20000
+        );
+
+}
+
+
 function esconderNotificacao() {
 
     const notificacao =
