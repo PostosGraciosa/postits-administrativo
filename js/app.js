@@ -2446,7 +2446,7 @@ function mostrarNotificacao(
     temporizadorNotificacao =
         setTimeout(
             esconderNotificacao,
-            10000000000000000
+            100000000000000000000000000000000000000000000000000000000000
         );
 
 }
